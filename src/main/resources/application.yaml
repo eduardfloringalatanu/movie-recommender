@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: movierecommender
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movierecommender_database
+    username: movierecommender_database_username
+    password: movierecommender_database_password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+jwt:
+  secret-key: RHcPLpkGDZ6WVq4LvGpqLhC9Rb6c5b17
+  secret-key-expiration: 3600000
