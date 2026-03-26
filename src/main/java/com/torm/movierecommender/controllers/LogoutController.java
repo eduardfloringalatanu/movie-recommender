@@ -2,9 +2,9 @@ package com.torm.movierecommender.controllers;
 
 import com.torm.movierecommender.repositories.RefreshTokenRepository;
 import com.torm.movierecommender.security.TokenService;
+import com.torm.movierecommender.services.LogoutService;
 import com.torm.movierecommender.validation.ValidationGroupSequences.First;
 import com.torm.movierecommender.validation.ValidationGroupSequences.ValidationGroupSequence1;
-import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,15 +18,15 @@ public class LogoutController {
     private final TokenService tokenService;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    private final LogoutService logoutService;
+
     public record LogoutRequestBody(
             @NotBlank(message = "Refresh token cannot be blank.", groups = First.class)
             String refreshToken) {}
 
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Transactional
     public void logout(@RequestBody @Validated(ValidationGroupSequence1.class) LogoutRequestBody logoutRequestBody) {
-        refreshTokenRepository.findByToken(tokenService.hashRefreshToken(logoutRequestBody.refreshToken()))
-                .ifPresent(refreshTokenRepository::delete);
+        logoutService.logout(logoutRequestBody);
     }
 }

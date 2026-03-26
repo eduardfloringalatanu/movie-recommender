@@ -1,10 +1,7 @@
 package com.torm.movierecommender.controllers;
 
-import com.torm.movierecommender.entities.UserEntity;
-import com.torm.movierecommender.repositories.UserRepository;
-import com.torm.movierecommender.security.TokenService;
+import com.torm.movierecommender.services.RegisterService;
 import com.torm.movierecommender.validation.ValidationGroupSequences.*;
-import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -13,22 +10,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
 public class RegisterController {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
+    private final RegisterService registerService;
 
     @NoArgsConstructor
     public static class RegisterRequestBody {
@@ -73,27 +65,7 @@ public class RegisterController {
     public record RegisterResponseBody(String accessToken, String refreshToken) {}
 
     @PostMapping("/register")
-    @Transactional
     public RegisterResponseBody register(@RequestBody @Validated(ValidationGroupSequence1.class) RegisterRequestBody registerRequestBody) {
-        if (userRepository.findByUsername(registerRequestBody.getUsername()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists.");
-        }
-
-        if (userRepository.findByEmail(registerRequestBody.getEmail()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists.");
-        }
-
-        UserEntity user = new UserEntity();
-        user.setUsername(registerRequestBody.getUsername());
-        user.setEmail(registerRequestBody.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequestBody.getPassword()));
-
-        userRepository.save(user);
-
-        String accessToken = tokenService.generateAccessToken(user.getUsername());
-
-        String refreshToken = tokenService.generateRefreshToken(user.getUserId());
-
-        return new RegisterResponseBody(accessToken, refreshToken);
+        return registerService.register(registerRequestBody);
     }
 }
