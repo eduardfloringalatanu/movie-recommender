@@ -17,7 +17,6 @@ public class SecurityConfig {
             "/register",
             "/login",
             "/refresh_access_token",
-            "/logout",
             "/error"
     };
 
