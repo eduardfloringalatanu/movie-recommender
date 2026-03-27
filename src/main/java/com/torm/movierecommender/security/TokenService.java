@@ -80,17 +80,6 @@ public class TokenService {
     }
 
     @Transactional
-    public RefreshTokenEntity verifyExpirationDate(RefreshTokenEntity refreshToken) {
-        if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
-            refreshTokenRepository.delete(refreshToken);
-
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token is expired.");
-        }
-
-        return refreshToken;
-    }
-
-    @Transactional
     @Scheduled(cron = "0 0 0 * * ?")
     public void deleteAllExpiredRefreshTokens() {
         refreshTokenRepository.deleteAllExpiredSince(Instant.now());

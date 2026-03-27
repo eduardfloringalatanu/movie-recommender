@@ -1,7 +1,5 @@
 package com.torm.movierecommender.controllers;
 
-import com.torm.movierecommender.repositories.RefreshTokenRepository;
-import com.torm.movierecommender.security.TokenService;
 import com.torm.movierecommender.services.LogoutService;
 import com.torm.movierecommender.validation.ValidationGroupSequences.First;
 import com.torm.movierecommender.validation.ValidationGroupSequences.ValidationGroupSequence1;

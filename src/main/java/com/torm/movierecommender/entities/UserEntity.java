@@ -7,7 +7,10 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")
+})
 @NoArgsConstructor
 public class UserEntity {
     @Id
@@ -15,11 +18,11 @@ public class UserEntity {
     @Getter
     private Long userId;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     @Getter @Setter
     private String username;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     @Getter @Setter
     private String email;
 

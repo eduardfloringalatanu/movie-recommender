@@ -21,12 +21,9 @@ public class RegisterService {
 
     @Transactional
     public RegisterResponseBody register(RegisterRequestBody registerRequestBody) {
-        if (userRepository.findByUsername(registerRequestBody.getUsername()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists.");
-        }
-
-        if (userRepository.findByEmail(registerRequestBody.getEmail()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists.");
+        if (userRepository.findByUsername(registerRequestBody.getUsername()).isPresent() ||
+                userRepository.findByEmail(registerRequestBody.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username/Email already exists.");
         }
 
         UserEntity user = new UserEntity();

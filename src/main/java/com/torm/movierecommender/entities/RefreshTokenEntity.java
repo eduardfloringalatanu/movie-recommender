@@ -7,7 +7,9 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
-@Table(name = "refresh_tokens")
+@Table(name = "refresh_tokens", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "token")
+})
 @NoArgsConstructor
 public class RefreshTokenEntity {
     @Id
@@ -15,7 +17,7 @@ public class RefreshTokenEntity {
     @Getter
     private Long refreshTokenId;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     @Getter @Setter
     private String token;
 
