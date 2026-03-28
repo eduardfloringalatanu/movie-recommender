@@ -38,7 +38,7 @@ public class TokenService {
     public String generateAccessToken(String identifier) {
         Instant now = Instant.now();
 
-        JwtClaimsSet claims = JwtClaimsSet.builder()
+        JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .subject(identifier)
                 .issuedAt(now)
                 .expiresAt(now.plusMillis(accessTokenExpiration))
@@ -46,7 +46,7 @@ public class TokenService {
 
         JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
 
-        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, jwtClaimsSet)).getTokenValue();
     }
 
     public String hashRefreshToken(String refreshToken) {
@@ -56,14 +56,14 @@ public class TokenService {
 
             return Base64.getEncoder().encodeToString(hash);
         } catch (Exception e) {
-            throw new RuntimeException("Error hashing refresh token.", e);
+            throw new RuntimeException("Failed to hash refresh token.", e);
         }
     }
 
     @Transactional
     public String generateRefreshToken(Long userId) {
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
 
         RefreshTokenEntity refreshToken = new RefreshTokenEntity();
 

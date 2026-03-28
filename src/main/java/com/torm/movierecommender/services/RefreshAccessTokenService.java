@@ -24,10 +24,10 @@ public class RefreshAccessTokenService {
         String hashedRefreshToken = tokenService.hashRefreshToken(refreshTokenRequestBody.refreshToken());
 
         RefreshTokenEntity refreshToken = refreshTokenRepository.findByToken(hashedRefreshToken)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token is invalid."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_INVALID_ERROR"));
 
         if (refreshToken.getExpiryDate().isBefore(Instant.now())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token is expired.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_INVALID_ERROR");
         }
 
         UserEntity user = refreshToken.getUser();

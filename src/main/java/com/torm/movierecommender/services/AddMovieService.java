@@ -26,18 +26,19 @@ public class AddMovieService {
         String username = jwt.getSubject();
 
         UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
 
         MovieEntity movie = new MovieEntity();
         movie.setTitle(addMovieRequestBody.title());
-        movie.setYear(addMovieRequestBody.year());
+        movie.setReleaseYear(addMovieRequestBody.releaseYear());
+        movie.setDirectors(String.join(",", addMovieRequestBody.directors()));
         movie.setGenres(String.join(",", addMovieRequestBody.genres()));
         movie.setPlot(addMovieRequestBody.plot());
 
         float[] embeddings = embeddingModel.embed(addMovieRequestBody.plot());
         movie.setEmbeddings(EmbeddingsUtils.embeddingsToJson(embeddings));
 
-        movie.setScore(null);
+        movie.setRating(null);
         movie.setUser(user);
 
         movieRepository.save(movie);

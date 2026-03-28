@@ -18,7 +18,10 @@ public class MovieEntity {
     private String title;
 
     @Getter @Setter
-    private Short year;
+    private Short releaseYear;
+
+    @Getter @Setter
+    private String directors;
 
     @Getter @Setter
     private String genres;
@@ -32,7 +35,7 @@ public class MovieEntity {
     private String embeddings;
 
     @Getter @Setter
-    private Short score;
+    private Short rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

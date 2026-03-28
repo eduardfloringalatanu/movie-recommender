@@ -14,9 +14,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private static final String[] PUBLIC_ROUTES = {
-            "/register",
-            "/login",
-            "/refresh_access_token",
+            "/api/auth/register",
+            "/api/auth/login",
+            "/api/auth/refresh",
             "/error"
     };
 

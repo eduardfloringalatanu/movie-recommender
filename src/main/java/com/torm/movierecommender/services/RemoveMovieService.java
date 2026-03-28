@@ -1,10 +1,9 @@
 package com.torm.movierecommender.services;
 
-import com.torm.movierecommender.controllers.LogoutController.LogoutRequestBody;
+import com.torm.movierecommender.entities.MovieEntity;
 import com.torm.movierecommender.entities.UserEntity;
-import com.torm.movierecommender.repositories.RefreshTokenRepository;
+import com.torm.movierecommender.repositories.MovieRepository;
 import com.torm.movierecommender.repositories.UserRepository;
-import com.torm.movierecommender.security.TokenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,23 +13,20 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-public class LogoutService {
+public class RemoveMovieService {
     private final UserRepository userRepository;
-    private final TokenService tokenService;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final MovieRepository movieRepository;
 
     @Transactional
-    public void logout(LogoutRequestBody logoutRequestBody, Jwt jwt) {
+    public void removeMovie(Long movieId, Jwt jwt) {
         String username = jwt.getSubject();
 
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
 
-        refreshTokenRepository.findByToken(tokenService.hashRefreshToken(logoutRequestBody.refreshToken()))
-                .ifPresent(token -> {
-                    if (token.getUser().getUserId().equals(user.getUserId())) {
-                        refreshTokenRepository.delete(token);
-                    }
-                });
+        MovieEntity movie = movieRepository.findByMovieIdAndUser(movieId, user)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "MOVIE_NOT_FOUND_ERROR"));
+
+        movieRepository.delete(movie);
     }
 }

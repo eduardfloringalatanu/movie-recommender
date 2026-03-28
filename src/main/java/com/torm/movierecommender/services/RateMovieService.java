@@ -19,16 +19,16 @@ public class RateMovieService {
     private final MovieRepository movieRepository;
 
     @Transactional
-    public void rateMovie(RateMovieRequestBody rateMovieRequestBody, Jwt jwt) {
+    public void rateMovie(Long movieId, RateMovieRequestBody rateMovieRequestBody, Jwt jwt) {
         String username = jwt.getSubject();
 
         UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
 
-        MovieEntity movie = movieRepository.findByMovieIdAndUser(rateMovieRequestBody.movieId(), user)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found."));
+        MovieEntity movie = movieRepository.findByMovieIdAndUser(movieId, user)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "MOVIE_NOT_FOUND_ERROR"));
 
-        movie.setScore(rateMovieRequestBody.score());
+        movie.setRating(rateMovieRequestBody.rating());
 
         movieRepository.save(movie);
     }

@@ -21,9 +21,12 @@ public class RegisterService {
 
     @Transactional
     public RegisterResponseBody register(RegisterRequestBody registerRequestBody) {
-        if (userRepository.findByUsername(registerRequestBody.getUsername()).isPresent() ||
-                userRepository.findByEmail(registerRequestBody.getEmail()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username/Email already exists.");
+        if (userRepository.findByUsername(registerRequestBody.getUsername()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "USERNAME_CONFLICT_ERROR");
+        }
+
+        if (userRepository.findByEmail(registerRequestBody.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "EMAIL_CONFLICT_ERROR");
         }
 
         UserEntity user = new UserEntity();

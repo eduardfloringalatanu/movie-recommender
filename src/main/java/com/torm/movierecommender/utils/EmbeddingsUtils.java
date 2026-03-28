@@ -9,7 +9,7 @@ public class EmbeddingsUtils {
         try {
             return OBJECT_MAPPER.writeValueAsString(embeddings);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to serialize embeddings array to JSON string.", e);
         }
     }
 
@@ -17,7 +17,7 @@ public class EmbeddingsUtils {
         try {
             return OBJECT_MAPPER.readValue(json, float[].class);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to deserialize JSON string to embeddings array.", e);
         }
     }
 }
