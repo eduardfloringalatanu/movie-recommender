@@ -25,6 +25,9 @@ public class RefreshTokenEntity {
     @Getter @Setter
     private Instant expiryDate;
 
+    @Getter @Setter
+    private Instant revokedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @Getter @Setter

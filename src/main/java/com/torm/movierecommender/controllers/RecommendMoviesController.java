@@ -16,7 +16,7 @@ import reactor.core.publisher.Flux;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/movies")
+@RequestMapping("/movies")
 @RequiredArgsConstructor
 public class RecommendMoviesController {
     private final RecommendMoviesService recommendMoviesService;
@@ -24,7 +24,6 @@ public class RecommendMoviesController {
     public record RecommendMoviesRequestBody(
             Set<@NotBlank(message = "EXCLUDED_GENRES_ITEMS_BLANK_ERROR") String> excludedGenres,
 
-            @NotNull(message = "MIN_RELEASE_YEAR_NULL_ERROR")
             @Min(value = 1888, message = "MIN_RELEASE_YEAR_MIN_ERROR")
             @MaxYear(message = "MIN_RELEASE_YEAR_MAX_ERROR")
             Short minReleaseYear) {}

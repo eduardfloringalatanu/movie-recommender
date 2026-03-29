@@ -21,13 +21,11 @@ public class RegisterService {
 
     @Transactional
     public RegisterResponseBody register(RegisterRequestBody registerRequestBody) {
-        if (userRepository.findByUsername(registerRequestBody.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(registerRequestBody.getUsername()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "USERNAME_CONFLICT_ERROR");
-        }
 
-        if (userRepository.findByEmail(registerRequestBody.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(registerRequestBody.getEmail()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "EMAIL_CONFLICT_ERROR");
-        }
 
         UserEntity user = new UserEntity();
         user.setUsername(registerRequestBody.getUsername());

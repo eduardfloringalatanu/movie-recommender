@@ -46,7 +46,8 @@ public class TokenService {
 
         JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
 
-        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, jwtClaimsSet)).getTokenValue();
+        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, jwtClaimsSet))
+                .getTokenValue();
     }
 
     public String hashRefreshToken(String refreshToken) {
@@ -54,7 +55,8 @@ public class TokenService {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
             byte[] hash = messageDigest.digest(refreshToken.getBytes(StandardCharsets.UTF_8));
 
-            return Base64.getEncoder().encodeToString(hash);
+            return Base64.getEncoder()
+                    .encodeToString(hash);
         } catch (Exception e) {
             throw new RuntimeException("Failed to hash refresh token.", e);
         }
@@ -63,7 +65,8 @@ public class TokenService {
     @Transactional
     public String generateRefreshToken(Long userId) {
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
 
         RefreshTokenEntity refreshToken = new RefreshTokenEntity();
 

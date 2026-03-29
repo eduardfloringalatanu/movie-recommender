@@ -24,7 +24,8 @@ public class RefreshAccessTokenService {
         String hashedRefreshToken = tokenService.hashRefreshToken(refreshTokenRequestBody.refreshToken());
 
         RefreshTokenEntity refreshToken = refreshTokenRepository.findByToken(hashedRefreshToken)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_INVALID_ERROR"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_INVALID_ERROR"));
 
         if (refreshToken.getExpiryDate().isBefore(Instant.now())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_INVALID_ERROR");
@@ -32,7 +33,16 @@ public class RefreshAccessTokenService {
 
         UserEntity user = refreshToken.getUser();
 
-        refreshTokenRepository.delete(refreshToken);
+        if (refreshToken.getRevokedAt() != null) {
+            if (Instant.now().isAfter(refreshToken.getRevokedAt().plusSeconds(30))) {
+                refreshTokenRepository.deleteByUser(user);
+
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_INVALID_ERROR");
+            }
+        } else {
+            refreshToken.setRevokedAt(Instant.now());
+            refreshTokenRepository.save(refreshToken);
+        }
 
         String newAccessToken = tokenService.generateAccessToken(user.getUsername());
         String newRefreshToken = tokenService.generateRefreshToken(user.getUserId());

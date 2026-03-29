@@ -21,11 +21,11 @@ public class LoginService {
     public LoginResponseBody login(LoginRequestBody loginRequestBody) {
         UserEntity user = userRepository.findByUsername(loginRequestBody.usernameOrEmail())
                 .or(() -> userRepository.findByEmail(loginRequestBody.usernameOrEmail()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "CREDENTIALS_INVALID_ERROR"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.UNAUTHORIZED, "CREDENTIALS_INVALID_ERROR"));
 
-        if (!passwordEncoder.matches(loginRequestBody.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequestBody.password(), user.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "CREDENTIALS_INVALID_ERROR");
-        }
 
         String accessToken = tokenService.generateAccessToken(user.getUsername());
 

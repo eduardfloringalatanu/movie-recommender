@@ -24,13 +24,13 @@ public class LogoutService {
         String username = jwt.getSubject();
 
         UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
 
         refreshTokenRepository.findByToken(tokenService.hashRefreshToken(logoutRequestBody.refreshToken()))
                 .ifPresent(token -> {
-                    if (token.getUser().getUserId().equals(user.getUserId())) {
+                    if (token.getUser().getUserId().equals(user.getUserId()))
                         refreshTokenRepository.delete(token);
-                    }
                 });
     }
 }

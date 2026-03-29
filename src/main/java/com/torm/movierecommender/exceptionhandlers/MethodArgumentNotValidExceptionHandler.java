@@ -16,10 +16,11 @@ public class MethodArgumentNotValidExceptionHandler {
         List<ArgumentError> argumentErrors = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> new ArgumentError(
-                        error.getField(),
-                        error.getDefaultMessage()
-                ))
+                .map(error ->
+                        new ArgumentError(
+                                error.getField(),
+                                error.getDefaultMessage()
+                        ))
                 .toList();
 
         return new ExceptionResponseBody(

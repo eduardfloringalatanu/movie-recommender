@@ -23,10 +23,12 @@ public class RateMovieService {
         String username = jwt.getSubject();
 
         UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
 
         MovieEntity movie = movieRepository.findByMovieIdAndUser(movieId, user)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "MOVIE_NOT_FOUND_ERROR"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "MOVIE_NOT_FOUND_ERROR"));
 
         movie.setRating(rateMovieRequestBody.rating());
 

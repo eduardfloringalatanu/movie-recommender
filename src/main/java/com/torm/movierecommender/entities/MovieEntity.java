@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "movies")
+@Table(name = "movies", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "title", "directors", "user_id" })
+})
 @NoArgsConstructor
 public class MovieEntity {
     @Id

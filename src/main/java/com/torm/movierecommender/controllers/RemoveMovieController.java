@@ -1,7 +1,6 @@
 package com.torm.movierecommender.controllers;
 
 import com.torm.movierecommender.services.RemoveMovieService;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/movies")
+@RequestMapping("/movies")
 @RequiredArgsConstructor
 @Validated
 public class RemoveMovieController {
