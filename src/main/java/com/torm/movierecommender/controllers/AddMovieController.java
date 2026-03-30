@@ -1,6 +1,7 @@
 package com.torm.movierecommender.controllers;
 
 import com.torm.movierecommender.services.AddMovieService;
+import com.torm.movierecommender.validation.Genre;
 import com.torm.movierecommender.validation.MaxYear;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -30,10 +31,17 @@ public class AddMovieController {
             Short releaseYear,
 
             @NotEmpty(message = "DIRECTORS_EMPTY_ERROR")
-            Set<@NotBlank(message = "DIRECTORS_ITEMS_BLANK_ERROR") String> directors,
+            Set<
+                    @NotBlank(message = "DIRECTORS_ITEMS_BLANK_ERROR")
+                    String
+                    > directors,
 
             @NotEmpty(message = "GENRES_EMPTY_ERROR")
-            Set<@NotBlank(message = "GENRES_ITEMS_BLANK_ERROR") String> genres,
+            Set<
+                    @NotBlank(message = "GENRES_ITEMS_BLANK_ERROR")
+                    @Genre(message = "GENRES_ITEMS_INVALID_ERROR")
+                    String
+                    > genres,
 
             @NotBlank(message = "PLOT_BLANK_ERROR")
             String plot) {}

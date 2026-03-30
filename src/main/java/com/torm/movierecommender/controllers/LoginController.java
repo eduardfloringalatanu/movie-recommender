@@ -17,9 +17,9 @@ public class LoginController {
     private final LoginService loginService;
 
     public record LoginRequestBody(
-            @NotBlank(message = "USERNAME_EMAIL_BLANK_ERROR")
-            @Size(max = 254, message = "USERNAME_EMAIL_SIZE_ERROR")
-            String usernameOrEmail,
+            @NotBlank(message = "IDENTIFIER_BLANK_ERROR")
+            @Size(max = 254, message = "IDENTIFIER_SIZE_ERROR")
+            String identifier,
 
             @NotBlank(message = "PASSWORD_BLANK_ERROR")
             @Size(max = 64, message = "PASSWORD_SIZE_ERROR")

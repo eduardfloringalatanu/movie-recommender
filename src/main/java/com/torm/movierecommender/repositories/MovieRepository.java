@@ -14,5 +14,5 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
     List<MovieEntity> findByRatingGreaterThanEqualAndUserOrderByRatingDesc(Short rating, UserEntity user);
     List<MovieEntity> findByRatingIsNullAndUser(UserEntity user);
     List<MovieEntity> findByRatingIsNullAndReleaseYearGreaterThanEqualAndUser(Short releaseYear, UserEntity user);
-    boolean existsByTitleAndDirectorsAndUser(String title, String directors, UserEntity user);
+    boolean existsByTitleAndReleaseYearAndDirectorsAndUser(String title, Short releaseYear, String directors, UserEntity user);
 }

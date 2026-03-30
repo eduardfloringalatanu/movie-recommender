@@ -13,11 +13,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AddMovieService {
+    private static final Map<String, String> CANONICAL_GENRES = Map.ofEntries(
+            Map.entry("action", "Action"),
+            Map.entry("adventure", "Adventure"),
+            Map.entry("comedy", "Comedy"),
+            Map.entry("drama", "Drama"),
+            Map.entry("horror", "Horror"),
+            Map.entry("thriller", "Thriller"),
+            Map.entry("romance", "Romance"),
+            Map.entry("sci-fi", "Sci-Fi"),
+            Map.entry("fantasy", "Fantasy"),
+            Map.entry("crime", "Crime"),
+            Map.entry("mystery", "Mystery"),
+            Map.entry("animation", "Animation")
+    );
+
     private final UserRepository userRepository;
     private final EmbeddingModel embeddingModel;
     private final MovieRepository movieRepository;
@@ -30,22 +46,41 @@ public class AddMovieService {
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_UNAUTHORIZED_ERROR"));
 
+        String title = addMovieRequestBody.title()
+                .strip()
+                .replaceAll("\\s+", " ");
+
+        Short releaseYear = addMovieRequestBody.releaseYear();
+
         String directors = addMovieRequestBody.directors()
                 .stream()
+                .map(String::strip)
+                .map(director -> director.replaceAll("\\s+", " "))
                 .sorted()
                 .collect(Collectors.joining(","));
 
-        if (movieRepository.existsByTitleAndDirectorsAndUser(addMovieRequestBody.title(), directors, user))
+        if (movieRepository.existsByTitleAndReleaseYearAndDirectorsAndUser(title, releaseYear, directors, user))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "MOVIE_CONFLICT_ERROR");
 
-        MovieEntity movie = new MovieEntity();
-        movie.setTitle(addMovieRequestBody.title());
-        movie.setReleaseYear(addMovieRequestBody.releaseYear());
-        movie.setDirectors(directors);
-        movie.setGenres(String.join(",", addMovieRequestBody.genres()));
-        movie.setPlot(addMovieRequestBody.plot());
+        String genres = addMovieRequestBody.genres()
+                .stream()
+                .map(String::strip)
+                .map(String::toLowerCase)
+                .map(CANONICAL_GENRES::get)
+                .sorted()
+                .collect(Collectors.joining(","));
 
-        float[] embeddings = embeddingModel.embed(addMovieRequestBody.plot());
+        String plot = addMovieRequestBody.plot()
+                .strip();
+
+        MovieEntity movie = new MovieEntity();
+        movie.setTitle(title);
+        movie.setReleaseYear(releaseYear);
+        movie.setDirectors(directors);
+        movie.setGenres(genres);
+        movie.setPlot(plot);
+
+        float[] embeddings = embeddingModel.embed(plot);
         movie.setEmbeddings(JsonUtils.toJson(embeddings));
 
         movie.setRating(null);

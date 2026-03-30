@@ -22,7 +22,7 @@ public class RegisterController {
         @NotBlank(message = "USERNAME_BLANK_ERROR")
         @Size(min = 3, message = "USERNAME_SIZE_ERROR_1")
         @Size(max = 32, message = "USERNAME_SIZE_ERROR_2")
-        @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "USERNAME_PATTERN_ERROR")
+        @Pattern(regexp = "^\\s*[a-zA-Z0-9_]+\\s*$", message = "USERNAME_PATTERN_ERROR")
         @Getter
         String username,
 

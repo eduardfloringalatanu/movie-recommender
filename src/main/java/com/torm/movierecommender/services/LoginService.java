@@ -19,8 +19,12 @@ public class LoginService {
     private final TokenService tokenService;
 
     public LoginResponseBody login(LoginRequestBody loginRequestBody) {
-        UserEntity user = userRepository.findByUsername(loginRequestBody.usernameOrEmail())
-                .or(() -> userRepository.findByEmail(loginRequestBody.usernameOrEmail()))
+        String identifier = loginRequestBody.identifier()
+                .strip()
+                .toLowerCase();
+
+        UserEntity user = userRepository.findByUsername(identifier)
+                .or(() -> userRepository.findByEmail(identifier))
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.UNAUTHORIZED, "CREDENTIALS_INVALID_ERROR"));
 
@@ -28,7 +32,6 @@ public class LoginService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "CREDENTIALS_INVALID_ERROR");
 
         String accessToken = tokenService.generateAccessToken(user.getUsername());
-
         String refreshToken = tokenService.generateRefreshToken(user.getUserId());
 
         return new LoginResponseBody(accessToken, refreshToken);

@@ -21,21 +21,28 @@ public class RegisterService {
 
     @Transactional
     public RegisterResponseBody register(RegisterRequestBody registerRequestBody) {
-        if (userRepository.findByUsername(registerRequestBody.getUsername()).isPresent())
+        String username = registerRequestBody.getUsername()
+                .strip()
+                .toLowerCase();
+
+        if (userRepository.findByUsername(username).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "USERNAME_CONFLICT_ERROR");
 
-        if (userRepository.findByEmail(registerRequestBody.getEmail()).isPresent())
+        String email = registerRequestBody.getEmail()
+                .strip()
+                .toLowerCase();
+
+        if (userRepository.findByEmail(email).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "EMAIL_CONFLICT_ERROR");
 
         UserEntity user = new UserEntity();
-        user.setUsername(registerRequestBody.getUsername());
-        user.setEmail(registerRequestBody.getEmail());
+        user.setUsername(username);
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(registerRequestBody.getPassword()));
 
         userRepository.save(user);
 
         String accessToken = tokenService.generateAccessToken(user.getUsername());
-
         String refreshToken = tokenService.generateRefreshToken(user.getUserId());
 
         return new RegisterResponseBody(accessToken, refreshToken);

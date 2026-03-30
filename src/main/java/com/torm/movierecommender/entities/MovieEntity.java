@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "movies", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "title", "directors", "user_id" })
+        @UniqueConstraint(columnNames = { "title", "releaseYear", "directors", "user_id" })
 })
 @NoArgsConstructor
 public class MovieEntity {
