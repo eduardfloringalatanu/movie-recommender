@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "movies", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "title", "releaseYear", "directors", "user_id" })
+        @UniqueConstraint(columnNames = { "title", "release_year", "directors", "user_id" })
 })
 @NoArgsConstructor
 public class MovieEntity {
@@ -16,26 +16,27 @@ public class MovieEntity {
     @Getter
     private Long movieId;
 
-    @Column(length = 500)
+    @Column(nullable = false, length = 500)
     @Getter @Setter
     private String title;
 
+    @Column(nullable = false)
     @Getter @Setter
     private Short releaseYear;
 
-    @Column(length = 1500)
+    @Column(nullable = false, length = 1500)
     @Getter @Setter
     private String directors;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     @Getter @Setter
     private String genres;
 
-    @Column(length = 1000)
+    @Column(nullable = false, length = 1000)
     @Getter @Setter
     private String plot;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     @Getter @Setter
     private String embeddings;
 
