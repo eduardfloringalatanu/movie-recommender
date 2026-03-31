@@ -10,10 +10,22 @@ public class DirectorsConstraintValidator implements ConstraintValidator<Directo
         if (directors == null || directors.isEmpty())
             return buildConstraintViolation(constraintValidatorContext, "DIRECTORS_EMPTY_ERROR");
 
-        for (String director : directors)
-            if (director == null || director.isBlank()) {
+        int directorsLength = 0;
+
+        for (String director : directors) {
+            if (director == null || director.isBlank())
                 return buildConstraintViolation(constraintValidatorContext, "DIRECTORS_ITEMS_BLANK_ERROR");
+
+            String cleanedDirector = director.strip()
+                    .replaceAll("\\s+", " ");
+
+            directorsLength += cleanedDirector.length();
         }
+
+        directorsLength += (directors.size() - 1);
+
+        if (directorsLength > 1500)
+            return buildConstraintViolation(constraintValidatorContext, "DIRECTORS_MAX_SIZE_ERROR");
 
         return true;
     }

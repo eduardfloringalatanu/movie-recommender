@@ -16,13 +16,14 @@ public class MovieEntity {
     @Getter
     private Long movieId;
 
+    @Column(length = 500)
     @Getter @Setter
     private String title;
 
     @Getter @Setter
     private Short releaseYear;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 1500)
     @Getter @Setter
     private String directors;
 
