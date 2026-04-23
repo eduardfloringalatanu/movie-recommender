@@ -104,6 +104,7 @@ public class RecommendMoviesService {
                 - NO SPOILERS: Focus on themes, conflicts and intrigue. Never reveal twists or the ending.
                 - UNIQUE HOOKS: Start every explanation with a strong, specific hook based on the plot. Avoid repeating phrasing across movies.
                 - GRAMMAR CONSTRAINTS: Avoid using the Oxford comma, em dashes and en dashes.
+                - STRUCTURE: Your response should contain only movie recommendations, not any other explanations.
                 
                 Format:
                 Follow this exact structure for each movie:

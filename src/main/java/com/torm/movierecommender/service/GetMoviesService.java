@@ -20,14 +20,16 @@ public class GetMoviesService {
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
 
-    public Page<GetMoviesResponseItemDto> getMovies(Jwt jwt, Pageable pageable) {
+    public Page<GetMoviesResponseItemDto> getMovies(Jwt jwt, String search, Pageable pageable) {
         String username = jwt.getSubject();
 
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() ->
                         new ResponseStatusException2(HttpStatus.UNAUTHORIZED, ErrorCode.USER_UNAUTHORIZED_ERROR));
 
-        return movieRepository.findByUser(user, pageable)
+        String safeSearch = (search == null) ? "" : search;
+
+        return movieRepository.findMoviesByUserAndTitle(user, safeSearch, pageable)
                 .map(movie -> {
                     Set<String> directors = Set.of(movie.getDirectors().split(","));
                     Set<String> genres = Set.of(movie.getGenres().split(","));
